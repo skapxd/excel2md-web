@@ -32,13 +32,17 @@ export function useA11ySettings(): A11ySettingsApi {
 
     // En modo "sistema", reaccionar en vivo cuando el OS cambia de tema.
     if (settings.theme !== 'system') return;
+    const controller = new AbortController();
     const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const onSystemChange = (): void => {
-      previousDark.current = media.matches;
-      void runThemeTransition(apply);
-    };
-    media.addEventListener('change', onSystemChange);
-    return () => media.removeEventListener('change', onSystemChange);
+    media.addEventListener(
+      'change',
+      () => {
+        previousDark.current = media.matches;
+        void runThemeTransition(apply);
+      },
+      { signal: controller.signal },
+    );
+    return () => controller.abort();
   }, [settings]);
 
   const update = (partial: Partial<A11ySettings>): void =>

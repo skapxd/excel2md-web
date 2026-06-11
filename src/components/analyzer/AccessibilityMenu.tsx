@@ -1,5 +1,5 @@
 import { Accessibility, Blend, Monitor, Moon, RotateCcw, Sun, SunDim, Type, X } from 'lucide-react';
-import { useState } from 'react';
+import { usePopover } from '@/hooks/use-popover';
 import type { CSSProperties } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import type { A11ySettings, ThemeMode } from '@/lib/a11y/types';
@@ -22,15 +22,15 @@ const FONT_OPTIONS: { value: A11ySettings['gridFont']; label: string; sample: st
 ];
 
 export function AccessibilityMenu({ api }: Props) {
-  const [open, setOpen] = useState(false);
+  const popover = usePopover();
   const dimmingPct = Math.round(api.settings.dimming * 100);
   const panelPct = Math.round(api.settings.panelAlpha * 100);
 
   return (
-    <div className="relative shrink-0">
+    <div ref={popover.containerRef} className="relative shrink-0">
       <button
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
+        onClick={popover.toggle}
+        aria-expanded={popover.open}
         aria-label="Opciones de accesibilidad"
         title="Accesibilidad"
         className="flex items-center gap-1 rounded-md border border-white/40 bg-white/10 px-2.5 py-1.5 text-xs font-bold text-white transition hover:bg-white/25"
@@ -39,7 +39,7 @@ export function AccessibilityMenu({ api }: Props) {
         Aa
       </button>
 
-      {open && (
+      {popover.open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-80 rounded-xl border border-slate-200 bg-white p-4 shadow-2xl dark:border-[#43464c] dark:bg-[#202124]">
           <div className="flex items-center justify-between">
             <p className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
@@ -47,7 +47,7 @@ export function AccessibilityMenu({ api }: Props) {
               Accesibilidad
             </p>
             <button
-              onClick={() => setOpen(false)}
+              onClick={popover.close}
               aria-label="Cerrar"
               className="rounded p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2e3034] dark:hover:text-slate-200"
             >

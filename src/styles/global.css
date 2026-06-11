@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/* Modo oscuro por clase (controlado por el menú de accesibilidad) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Parámetros de accesibilidad (los modifica el menú ♿) y paleta de la hoja */
+:root {
+  --dim-opacity: 0.35;
+  --panel-alpha: 0.95;
+  --grid-font: 0.875rem;
+
+  --accent: #107c41;
+  --panel-bg: 255 255 255;
+  --cell-bg: #ffffff;
+  --cell-bg-banded: #f6f9f7;
+  --cell-text: #1e293b;
+  --cell-border: #e3e5e8;
+  --cell-hover: #d8ecdf;
+  --cell-formula-bg: #ddf0e4;
+  --cell-formula-text: #0b5c30;
+  --cell-precedent: #cfe3f5;
+  --cell-precedent-deep: #e8f2fb;
+  --cell-dependent: #ffedb3;
+  --cell-dependent-deep: #fff7dc;
+  --cell-cycle-bg: #fbd9d9;
+  --cell-cycle-text: #991b1b;
+  --header-bg: #edf2ee;
+  --header-text: #3e5747;
+  --header-border: #cfd4d0;
+  --chrome-bg: #f4f8f5;
+  --chrome-border: #cfd4d0;
+}
+
+.dark {
+  --accent: #22c55e;
+  --panel-bg: 24 26 31;
+  --cell-bg: #16181d;
+  --cell-bg-banded: #1b1e24;
+  --cell-text: #e7eaef;
+  --cell-border: #2b2f37;
+  --cell-hover: #1f3a2c;
+  --cell-formula-bg: #123524;
+  --cell-formula-text: #4ade80;
+  --cell-precedent: #1e418c;
+  --cell-precedent-deep: #1b2a4a;
+  --cell-dependent: #806008;
+  --cell-dependent-deep: #41350c;
+  --cell-cycle-bg: #5b1d26;
+  --cell-cycle-text: #ff97a0;
+  --header-bg: #20232a;
+  --header-text: #aab3c0;
+  --header-border: #343943;
+  --chrome-bg: #14161a;
+  --chrome-border: #343943;
+}
+
+/* Transición de tema: View Transitions API (reveal circular controlado por JS) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Fallback para navegadores sin View Transitions: cross-fade de colores por CSS */
+.theme-transition,
+.theme-transition * {
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease,
+    fill 0.4s ease,
+    stroke 0.4s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition * {
+    transition: none !important;
+  }
+}
+
+/* Sliders del menú de accesibilidad: pista rellena hasta --range-fill + thumb verde */
+.a11y-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--range-fill, 50%),
+    var(--range-track, #e2e8f0) var(--range-fill, 50%)
+  );
+  cursor: pointer;
+}
+
+.dark .a11y-range {
+  --range-track: #3a3d42;
+}
+
+.a11y-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+.a11y-range::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+/* Scrollbars finos estilo móvil: track transparente, thumb delgado y redondeado. */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: rgb(100 116 139 / 0.4);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(100 116 139 / 0.65);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox (no soporta ::-webkit-scrollbar) */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(100 116 139 / 0.4) transparent;
+  }
+}

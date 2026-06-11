@@ -1,0 +1,9 @@
+allowBuilds:
+  # canvas es transitiva de webhint; no necesitamos su build nativo
+  canvas: false
+  esbuild: true
+  sharp: true
+minimumReleaseAgeExclude:
+  # Paquete propio del usuario: confiable aunque la versión tenga minutos de publicada
+  - '@skapxd/eslint-opinionated'
+  - astro@6.4.6

@@ -1,0 +1,39 @@
+---
+import '@/styles/global.css';
+import 'github-markdown-css/github-markdown-light.css';
+import { AnalyzerApp } from '@/components/analyzer/AnalyzerApp.tsx';
+
+const title = 'Análisis de tu Excel — fórmulas, dependencias y Markdown';
+const description =
+  'Resultado del análisis de tu archivo de Excel: resumen del libro, explorador de dependencias entre celdas y Markdown listo para copiar a una IA.';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex" />
+    <script is:inline>
+      // Aplica el tema guardado (o el del sistema) antes del primer paint, sin destello.
+      const raw = localStorage.getItem('excel2md-a11y-settings');
+      const stored = raw ? JSON.parse(raw) : {};
+      let theme = stored.theme;
+      if (!theme && stored.darkMode === true) theme = 'dark';
+      if (!theme && stored.darkMode === false) theme = 'light';
+      if (!theme) theme = 'system';
+      const dark =
+        theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.classList.toggle('dark', dark);
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900 antialiased dark:bg-[#141517] dark:text-slate-100">
+    <main class="mx-auto max-w-[1700px] px-4 py-10 lg:px-8">
+      <AnalyzerApp client:load />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "name": "excel2md-web",
+  "type": "module",
+  "version": "0.0.1",
+  "license": "MIT",
+  "packageManager": "pnpm@11.2.2",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "eslint",
+    "lint:changed": "skapxd-lint-changed",
+    "lint:web": "CHROME_PATH=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" hint http://localhost:4321 http://localhost:4321/analizar"
+  },
+  "dependencies": {
+    "@astrojs/react": "^5.0.7",
+    "@skapxd/excel2md": "^1.4.1",
+    "@skapxd/result": "^1.0.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^6.4.6",
+    "github-markdown-css": "^5.9.0",
+    "lucide-react": "^1.17.0",
+    "marked": "^18.0.5",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.0",
+    "ts-pattern": "^5.9.0",
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@skapxd/eslint-opinionated": "^0.9.0",
+    "eslint": "^10.4.1",
+    "eslint-plugin-astro": "^1.7.0",
+    "hint": "^7.1.13",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0"
+  }
+}

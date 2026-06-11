@@ -24,12 +24,14 @@ export function buildDependentTree(formulaCells: FormulaCell[], rootId: string):
         id: dependentId,
         truncated: false,
       };
-      if (!cyclic) {
-        if (depth < MAX_DEPTH) {
-          node.children = visit(dependentId, depth + 1, new Set([...path, dependentId]));
-        } else {
-          node.truncated = findCellDependents(formulaCells, dependentId).length > 0;
-        }
+      if (cyclic) {
+        nodes.push(node);
+        continue;
+      }
+      if (depth < MAX_DEPTH) {
+        node.children = visit(dependentId, depth + 1, new Set([...path, dependentId]));
+      } else {
+        node.truncated = findCellDependents(formulaCells, dependentId).length > 0;
       }
       nodes.push(node);
     }

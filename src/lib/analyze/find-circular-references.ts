@@ -10,9 +10,12 @@ export function findCircularReferences(cells: FormulaCell[], limit = 5): string[
     if (cycles.length >= limit) return;
     const mark = state.get(id);
     if (mark === 'done') return;
+    const cycleStart = path.indexOf(id);
+    if (mark === 'visiting' && cycleStart >= 0) {
+      cycles.push([...path.slice(cycleStart), id]);
+      return;
+    }
     if (mark === 'visiting') {
-      const start = path.indexOf(id);
-      if (start >= 0) cycles.push([...path.slice(start), id]);
       return;
     }
     state.set(id, 'visiting');

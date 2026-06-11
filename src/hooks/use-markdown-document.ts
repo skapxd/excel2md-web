@@ -14,7 +14,7 @@ export type MarkdownDocumentApi = {
 
 export function useMarkdownDocument(workbook: XLSX.WorkBook | null): MarkdownDocumentApi {
   const [options, setOptions] = useState<MarkdownOptions>({
-    cellRefs: false,
+    cellRefs: true,
     deps: true,
     excelFormat: false,
     formulas: true,

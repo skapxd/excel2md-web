@@ -14,6 +14,39 @@ export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string):
     const cell = byId.get(id);
     if (!cell) return [];
     const children: DependencyNode[] = [];
+
+    const addFormulaChildren = (
+      node: DependencyNode,
+      depCell: FormulaCell | undefined,
+      dep: string,
+    ): void => {
+      if (!depCell || node.cyclic) return;
+      if (depth < MAX_DEPTH) {
+        node.children = visit(dep, depth + 1, new Set([...path, dep]));
+        node.truncated = depCell.deps.length > 0 && node.children.length === 0 && budget <= 0;
+        return;
+      }
+      node.truncated = depCell.deps.length > 0;
+    };
+
+    const addRangeChildren = (node: DependencyNode, depCell: FormulaCell | undefined, dep: string): void => {
+      if (depCell || !dep.includes(':') || depth >= MAX_DEPTH) return;
+      // Rango: sus hijos son las celdas con fórmula dentro del rango.
+      for (const innerId of expandRefToCells(dep)) {
+        if (budget <= 0) break;
+        const innerCell = byId.get(innerId);
+        if (!innerCell || path.has(innerId)) continue;
+        budget -= 1;
+        node.children.push({
+          children: visit(innerId, depth + 1, new Set([...path, innerId])),
+          cyclic: false,
+          formula: innerCell.formula,
+          id: innerId,
+          truncated: false,
+        });
+      }
+    };
+
     for (const dep of cell.deps) {
       if (budget <= 0) break;
       budget -= 1;
@@ -26,30 +59,8 @@ export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string):
         id: dep,
         truncated: false,
       };
-      if (depCell && !cyclic) {
-        if (depth < MAX_DEPTH) {
-          node.children = visit(dep, depth + 1, new Set([...path, dep]));
-          node.truncated = depCell.deps.length > 0 && node.children.length === 0 && budget <= 0;
-        } else {
-          node.truncated = depCell.deps.length > 0;
-        }
-      }
-      if (!depCell && dep.includes(':') && depth < MAX_DEPTH) {
-        // Rango: sus hijos son las celdas con fórmula dentro del rango.
-        for (const innerId of expandRefToCells(dep)) {
-          if (budget <= 0) break;
-          const innerCell = byId.get(innerId);
-          if (!innerCell || path.has(innerId)) continue;
-          budget -= 1;
-          node.children.push({
-            children: visit(innerId, depth + 1, new Set([...path, innerId])),
-            cyclic: false,
-            formula: innerCell.formula,
-            id: innerId,
-            truncated: false,
-          });
-        }
-      }
+      addFormulaChildren(node, depCell, dep);
+      addRangeChildren(node, depCell, dep);
       children.push(node);
     }
     return children;

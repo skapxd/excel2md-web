@@ -15,11 +15,11 @@ export function usePendingWorkbook(): PendingWorkbook {
   useEffect(() => {
     const load = async (): Promise<void> => {
       const stored = await loadPendingFile();
+      if (!stored.ok && stored.error.type === 'NOT_FOUND') {
+        setState({ status: 'empty' });
+        return;
+      }
       if (!stored.ok) {
-        if (stored.error.type === 'NOT_FOUND') {
-          setState({ status: 'empty' });
-          return;
-        }
         setState({ message: stored.error.message, status: 'error' });
         return;
       }

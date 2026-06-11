@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent, RefObject } from 'react';
+import { reportDomainError } from '@/lib/errors/report-domain-error';
 import { savePendingFile } from '@/lib/stored-file/save-pending-file';
 
 export type UploadStatus =
@@ -30,6 +31,7 @@ export function useUploadDropzone(): UploadDropzoneApi {
     setStatus({ kind: 'saving' });
     const saved = await savePendingFile(file);
     if (!saved.ok) {
+      reportDomainError('No se pudo guardar el archivo seleccionado.', saved.error);
       setStatus({ kind: 'error', message: saved.error.message });
       return;
     }

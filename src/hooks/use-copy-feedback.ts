@@ -1,20 +1,32 @@
 import { useState } from 'react';
 import { copyTextToClipboard } from '@/lib/clipboard/copy-text-to-clipboard';
+import { reportDomainError } from '@/lib/errors/report-domain-error';
 
 export type CopyFeedbackApi = {
   copiedKey: string;
+  errorMessage: string;
   copy: (key: string, text: string) => Promise<void>;
 };
 
+type CopyFeedbackState = {
+  copiedKey: string;
+  errorMessage: string;
+};
+
 export function useCopyFeedback(): CopyFeedbackApi {
-  const [copiedKey, setCopiedKey] = useState('');
+  const [feedback, setFeedback] = useState<CopyFeedbackState>({ copiedKey: '', errorMessage: '' });
 
   const copy = async (key: string, text: string): Promise<void> => {
     const result = await copyTextToClipboard(text);
-    if (!result.ok) return;
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(''), 2000);
+    if (!result.ok) {
+      reportDomainError('No se pudo copiar al portapapeles.', result.error);
+      setFeedback({ copiedKey: '', errorMessage: result.error.message });
+      setTimeout(() => setFeedback({ copiedKey: '', errorMessage: '' }), 3000);
+      return;
+    }
+    setFeedback({ copiedKey: key, errorMessage: '' });
+    setTimeout(() => setFeedback({ copiedKey: '', errorMessage: '' }), 2000);
   };
 
-  return { copiedKey, copy };
+  return { copiedKey: feedback.copiedKey, copy, errorMessage: feedback.errorMessage };
 }

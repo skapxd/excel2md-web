@@ -75,6 +75,11 @@ export function MarkdownPanel() {
             <Download className="h-4 w-4" aria-hidden="true" />
             Descargar .md
           </button>
+          {feedback.errorMessage && (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              {feedback.errorMessage}
+            </p>
+          )}
         </div>
       </div>
 

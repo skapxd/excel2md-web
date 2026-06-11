@@ -35,7 +35,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@skapxd/eslint-opinionated": "^0.11.0",
+    "@skapxd/eslint-opinionated": "^0.13.0",
     "eslint": "^10.4.1",
     "eslint-plugin-astro": "^1.7.0",
     "hint": "^7.1.13",

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type * as XLSX from 'xlsx';
 import { loadPendingFile } from '@/lib/stored-file/load-pending-file';
 import { readWorkbook } from '@/lib/read-workbook';
+import { reportDomainError } from '@/lib/errors/report-domain-error';
 
 export type PendingWorkbook =
   | { status: 'loading' }
@@ -20,11 +21,13 @@ export function usePendingWorkbook(): PendingWorkbook {
         return;
       }
       if (!stored.ok) {
+        reportDomainError('No se pudo cargar el archivo pendiente.', stored.error);
         setState({ message: stored.error.message, status: 'error' });
         return;
       }
       const workbook = readWorkbook(stored.value.bytes);
       if (!workbook.ok) {
+        reportDomainError('No se pudo leer el libro de Excel.', workbook.error);
         setState({ message: workbook.error.message, status: 'error' });
         return;
       }

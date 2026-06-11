@@ -1,4 +1,5 @@
 import { trySafe } from '@skapxd/result';
+import { reportDomainError } from '@/lib/errors/report-domain-error';
 
 const REVEAL_ORIGIN = '92% 4%';
 const REVEAL_MS = 550;
@@ -26,7 +27,10 @@ export async function runThemeTransition(apply: () => void): Promise<void> {
 
   const transition = document.startViewTransition(apply);
   const ready = await trySafe(() => transition.ready);
-  if (!ready.ok) return;
+  if (!ready.ok) {
+    reportDomainError('No se pudo preparar la transición de tema.', ready.error);
+    return;
+  }
 
   root.animate(
     { clipPath: [`circle(0% at ${REVEAL_ORIGIN})`, `circle(150% at ${REVEAL_ORIGIN})`] },

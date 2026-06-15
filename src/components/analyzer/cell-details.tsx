@@ -1,5 +1,6 @@
 import { AlertTriangle, ArrowLeft, ArrowRight, LocateFixed, MousePointerClick } from 'lucide-react';
-import { DependencyTree } from '@/components/analyzer/DependencyTree';
+import { DependencyTree } from '@/components/analyzer/dependency-tree';
+import { IconTextRow } from '@/components/analyzer/icon-text-row';
 import { useWorkbookStore } from '@/hooks/use-workbook-store';
 import type { CellRelations } from '@/lib/grid/types';
 
@@ -8,6 +9,13 @@ type Props = {
   sheetName: string;
 };
 
+const LEGEND_ITEMS = [
+  { colorClass: 'bg-[#9fd8b6]', label: 'Celda con fórmula' },
+  { colorClass: 'bg-[#7eb3e3]', label: 'Alimenta a la celda seleccionada' },
+  { colorClass: 'bg-[#eccb62]', label: 'Usa la celda seleccionada' },
+  { colorClass: 'bg-[#e89a9a]', label: 'Referencia circular' },
+];
+
 export function CellDetails({ relations, sheetName }: Props) {
   const session = useWorkbookStore();
   const ownPrefix = `${sheetName}!`;
@@ -15,10 +23,13 @@ export function CellDetails({ relations, sheetName }: Props) {
   return (
     <div className="max-h-[60vh] overflow-y-auto overscroll-contain rounded-xl border border-slate-200 bg-[rgb(var(--panel-bg)/var(--panel-alpha))] p-4 shadow-2xl backdrop-blur dark:border-[#43464c]">
       {!relations.selectedId && (
-        <p className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
-          <MousePointerClick className="h-4 w-4 shrink-0 text-[#107c41] dark:text-[#6ee7a0]" aria-hidden="true" />
+        <IconTextRow
+          as="p"
+          icon={MousePointerClick}
+          iconClassName="h-4 w-4 shrink-0 text-[#107c41] dark:text-[#6ee7a0]"
+        >
           Haz clic en cualquier celda de la hoja para ver de dónde sale su valor.
-        </p>
+        </IconTextRow>
       )}
 
       {relations.selectedId && (
@@ -83,22 +94,12 @@ export function CellDetails({ relations, sheetName }: Props) {
               ¿Qué significan los colores?
             </summary>
             <ul className="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-300">
-              <li className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#9fd8b6]" />
-                Celda con fórmula
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#7eb3e3]" />
-                Alimenta a la celda seleccionada
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#eccb62]" />
-                Usa la celda seleccionada
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#e89a9a]" />
-                Referencia circular
-              </li>
+              {LEGEND_ITEMS.map((item) => (
+                <li key={item.label} className="flex items-center gap-2">
+                  <span className={`inline-block h-2.5 w-2.5 rounded-full ${item.colorClass}`} />
+                  {item.label}
+                </li>
+              ))}
             </ul>
             <p className="mt-1.5 text-[11px] text-slate-400">
               Los tonos más claros marcan niveles más profundos de la cadena.

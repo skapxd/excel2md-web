@@ -1,9 +1,9 @@
 import { ArrowLeft, ClipboardList, FileSpreadsheet, FileText, Table } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { AccessibilityMenu } from '@/components/analyzer/AccessibilityMenu';
-import { MarkdownPanel } from '@/components/analyzer/MarkdownPanel';
-import { SpreadsheetPanel } from '@/components/analyzer/SpreadsheetPanel';
-import { SummaryPanel } from '@/components/analyzer/SummaryPanel';
+import { AccessibilityMenu } from '@/components/analyzer/accessibility-menu';
+import { MarkdownPanel } from '@/components/analyzer/markdown-panel';
+import { SpreadsheetPanel } from '@/components/analyzer/spreadsheet-panel';
+import { SummaryPanel } from '@/components/analyzer/summary-panel';
 import { useA11ySettings } from '@/hooks/use-a11y-settings';
 import { useWorkbookAnalysis } from '@/hooks/use-workbook-analysis';
 import { useWorkbookStore } from '@/hooks/use-workbook-store';

@@ -1,4 +1,4 @@
-import { AnalysisView } from '@/components/analyzer/AnalysisView';
+import { AnalysisView } from '@/components/analyzer/analysis-view';
 import { useOpenPendingWorkbook } from '@/hooks/use-open-pending-workbook';
 
 export function AnalyzerApp() {

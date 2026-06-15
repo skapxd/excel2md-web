@@ -14,6 +14,18 @@ const OPTION_FIELDS: { key: keyof MarkdownOptions; label: string; hint: string }
   { hint: 'Comentarios HTML con la coordenada de cada celda (útil para IA)', key: 'cellRefs', label: 'Referencias de celda ocultas' },
 ];
 
+/**
+ * ## Panel de salida Markdown
+ *
+ * Centraliza las tres salidas del análisis: vista previa legible, Markdown
+ * crudo y prompt copiable para otro agente, manteniendo las opciones de
+ * serialización al lado del resultado.
+ *
+ * ```ts
+ * MarkdownPanel()
+ * // workbook -> opciones -> markdown/html -> copiar, descargar o previsualizar
+ * ```
+ */
 export function MarkdownPanel() {
   const session = useWorkbookStore();
   const doc = useMarkdownDocument(session.workbook);

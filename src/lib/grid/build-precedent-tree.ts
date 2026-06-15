@@ -5,7 +5,17 @@ import type { DependencyNode } from '@/lib/grid/types';
 const MAX_DEPTH = 4;
 const MAX_NODES = 40;
 
-/** Árbol multinivel de precedentes: de qué celdas se calcula la raíz, recursivamente. */
+/**
+ * ## Árbol de precedentes
+ *
+ * Expande de forma acotada las celdas que alimentan una fórmula para que la UI
+ * pueda mostrar una cadena navegable sin congelarse en libros grandes.
+ *
+ * ```ts
+ * buildPrecedentTree([{ id: 'Hoja1!C1', deps: ['Hoja1!A1'] }], 'Hoja1!C1')
+ * // -> [{ id: 'Hoja1!A1', children: [], cyclic: false, truncated: false }]
+ * ```
+ */
 export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string): DependencyNode[] {
   const byId = new Map(formulaCells.map((cell) => [cell.id, cell]));
   let budget = MAX_NODES;

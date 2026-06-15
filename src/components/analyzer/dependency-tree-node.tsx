@@ -1,6 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import { DependencyTree } from '@/components/analyzer/DependencyTree';
+import { DependencyTree } from '@/components/analyzer/dependency-tree';
 import { useWorkbookStore } from '@/hooks/use-workbook-store';
 import { splitCellId } from '@/lib/grid/split-cell-id';
 import type { DependencyNode } from '@/lib/grid/types';
@@ -16,6 +16,17 @@ type Props = {
 const CHIP =
   'shrink-0 rounded-md border px-2 py-0.5 font-mono text-xs text-slate-800 transition group-data-[tone=precedent]:border-[#9dc3e6] group-data-[tone=precedent]:bg-[#cfe3f5] group-data-[tone=precedent]:hover:bg-[#bcd8f0] group-data-[tone=dependent]:border-[#e6c45c] group-data-[tone=dependent]:bg-[#ffedb3] group-data-[tone=dependent]:hover:bg-[#f7e6ad]';
 
+/**
+ * ## Nodo navegable de dependencias
+ *
+ * Cada celda del árbol debe poder abrirse, contraerse y navegar al grid sin
+ * duplicar estado entre niveles recursivos.
+ *
+ * ```ts
+ * DependencyTreeNode(A1 -> [B1, C1])
+ * // Renderiza A1 como chip; si esta abierto, delega B1 y C1 a DependencyTree.
+ * ```
+ */
 export function DependencyTreeNode({ node }: Props) {
   const session = useWorkbookStore();
   const [open, setOpen] = useState(true);

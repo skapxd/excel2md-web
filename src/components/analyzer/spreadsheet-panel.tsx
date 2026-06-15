@@ -1,7 +1,7 @@
-import { CellDetails } from '@/components/analyzer/CellDetails';
-import { ExcelGrid } from '@/components/analyzer/ExcelGrid';
-import { FormulaBar } from '@/components/analyzer/FormulaBar';
-import { SheetTabs } from '@/components/analyzer/SheetTabs';
+import { CellDetails } from '@/components/analyzer/cell-details';
+import { ExcelGrid } from '@/components/analyzer/excel-grid';
+import { FormulaBar } from '@/components/analyzer/formula-bar';
+import { SheetTabs } from '@/components/analyzer/sheet-tabs';
 import { useCellRelations } from '@/hooks/use-cell-relations';
 import { useSheetGrid } from '@/hooks/use-sheet-grid';
 import { useWorkbookStore } from '@/hooks/use-workbook-store';

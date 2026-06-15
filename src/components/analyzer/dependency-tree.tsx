@@ -1,4 +1,4 @@
-import { DependencyTreeNode } from '@/components/analyzer/DependencyTreeNode';
+import { DependencyTreeNode } from '@/components/analyzer/dependency-tree-node';
 import type { DependencyNode } from '@/lib/grid/types';
 
 type Props = {

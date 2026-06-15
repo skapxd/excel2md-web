@@ -1,4 +1,6 @@
 import { Accessibility, Blend, Monitor, Moon, RotateCcw, Sun, SunDim, Type, X } from 'lucide-react';
+import { IconTextRow } from '@/components/analyzer/icon-text-row';
+import { SegmentedOptionButton } from '@/components/analyzer/segmented-option-button';
 import { usePopover } from '@/hooks/use-popover';
 import {
   A11Y_DIMMING_MAX,
@@ -76,25 +78,19 @@ export function AccessibilityMenu({ api }: Props) {
 
           {/* Tema: claro / oscuro / según el sistema operativo */}
           <div className="mt-5">
-            <span className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
-              <Moon className="h-4 w-4 text-slate-400" aria-hidden="true" />
+            <IconTextRow icon={Moon}>
               Tema
-            </span>
+            </IconTextRow>
             <div className="mt-2 grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#2a2c30]">
               {THEME_OPTIONS.map((option) => (
-                <button
+                <SegmentedOptionButton
                   key={option.value}
-                  onClick={() => api.update({ theme: option.value })}
-                  aria-pressed={api.settings.theme === option.value}
-                  className={`flex flex-col items-center gap-1 rounded-md px-2 py-1.5 transition ${
-                    api.settings.theme === option.value
-                      ? 'bg-white font-bold text-[#0b5c30] shadow-sm dark:bg-[#3a3d42] dark:text-[#4ade80]'
-                      : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
+                  active={api.settings.theme === option.value}
+                  onSelect={() => api.update({ theme: option.value })}
                 >
                   <option.icon className="h-4 w-4" aria-hidden="true" />
                   <span className="text-[10px]">{option.label}</span>
-                </button>
+                </SegmentedOptionButton>
               ))}
             </div>
           </div>
@@ -146,25 +142,19 @@ export function AccessibilityMenu({ api }: Props) {
 
           {/* Tamaño del texto: segmented control */}
           <div className="mt-4">
-            <span className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
-              <Type className="h-4 w-4 text-slate-400" aria-hidden="true" />
+            <IconTextRow icon={Type}>
               Tamaño del texto de la hoja
-            </span>
+            </IconTextRow>
             <div className="mt-2 grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#2a2c30]">
               {FONT_OPTIONS.map((option) => (
-                <button
+                <SegmentedOptionButton
                   key={option.value}
-                  onClick={() => api.update({ gridFont: option.value })}
-                  aria-pressed={api.settings.gridFont === option.value}
-                  className={`flex flex-col items-center rounded-md px-2 py-1.5 transition ${
-                    api.settings.gridFont === option.value
-                      ? 'bg-white font-bold text-[#0b5c30] shadow-sm dark:bg-[#3a3d42] dark:text-[#4ade80]'
-                      : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
+                  active={api.settings.gridFont === option.value}
+                  onSelect={() => api.update({ gridFont: option.value })}
                 >
                   <span className={`${option.sample} font-serif leading-none`}>A</span>
                   <span className="mt-1 text-[10px]">{option.label}</span>
-                </button>
+                </SegmentedOptionButton>
               ))}
             </div>
           </div>

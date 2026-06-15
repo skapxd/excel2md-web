@@ -12,8 +12,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint",
-    "lint:changed": "skapxd-lint-changed",
+    "lint": "eslint --format unix",
+    "lint:changed": "skapxd-lint --changed",
     "lint:web": "CHROME_PATH=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" hint http://localhost:4321 http://localhost:4321/analizar"
   },
   "dependencies": {
@@ -35,8 +35,9 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@skapxd/eslint-opinionated": "^5.0.0",
+    "@skapxd/eslint-opinionated": "^6.0.1",
     "eslint": "^10.4.1",
+    "eslint-formatter-unix": "^9.0.1",
     "eslint-plugin-astro": "^1.7.0",
     "hint": "^7.1.13",
     "typescript": "^6.0.3",

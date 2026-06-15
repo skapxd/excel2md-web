@@ -15,7 +15,18 @@ const BASE =
 /** Atenuación "spotlight" parametrizable: lo que no participa en la cadena se ensombrece. */
 const DIM = ' opacity-[var(--dim-opacity)] hover:opacity-100';
 
-/** Pinta la celda con el código de colores estilo Excel (cursor, ancla, precedentes…). */
+/**
+ * ## Clase visual de celda
+ *
+ * Convierte las relaciones de fórmula en estados visuales compatibles con una
+ * grilla tipo Excel: cursor, ancla, precedentes, dependientes, ciclos y celdas
+ * atenuadas.
+ *
+ * ```ts
+ * getCellClass({ cell, sheetName: 'Hoja1', relations, banded: false, cursorId: 'Hoja1!A1' })
+ * // -> '... outline-[var(--accent)] ...'
+ * ```
+ */
 export function getCellClass({ banded, cell, cursorId, relations, sheetName }: Args): string {
   const id = `${sheetName}!${cell.address}`;
   const align = cell.isNumber ? 'text-right' : 'text-left';

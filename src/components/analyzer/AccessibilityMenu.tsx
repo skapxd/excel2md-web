@@ -9,6 +9,8 @@ type Props = {
   api: A11ySettingsApi;
 };
 
+type RangeFillStyle = CSSProperties & { '--range-fill': string };
+
 const THEME_OPTIONS: { value: ThemeMode; label: string; icon: LucideIcon }[] = [
   { icon: Sun, label: 'Claro', value: 'light' },
   { icon: Moon, label: 'Oscuro', value: 'dark' },
@@ -25,6 +27,8 @@ export function AccessibilityMenu({ api }: Props) {
   const popover = usePopover();
   const dimmingPct = Math.round(api.settings.dimming * 100);
   const panelPct = Math.round(api.settings.panelAlpha * 100);
+  const dimmingRangeStyle: RangeFillStyle = { '--range-fill': `${(dimmingPct / 80) * 100}%` };
+  const panelRangeStyle: RangeFillStyle = { '--range-fill': `${((panelPct - 60) / 40) * 100}%` };
 
   return (
     <div ref={popover.containerRef} className="relative shrink-0">
@@ -98,7 +102,7 @@ export function AccessibilityMenu({ api }: Props) {
               value={dimmingPct}
               onChange={(event) => api.update({ dimming: Number(event.target.value) / 100 })}
               className="a11y-range mt-2 w-full"
-              style={{ '--range-fill': `${(dimmingPct / 80) * 100}%` } as CSSProperties}
+              style={dimmingRangeStyle}
             />
             <span className="text-xs text-slate-400">0% = la hoja nunca se ensombrece</span>
           </label>
@@ -121,7 +125,7 @@ export function AccessibilityMenu({ api }: Props) {
               value={panelPct}
               onChange={(event) => api.update({ panelAlpha: Number(event.target.value) / 100 })}
               className="a11y-range mt-2 w-full"
-              style={{ '--range-fill': `${((panelPct - 60) / 40) * 100}%` } as CSSProperties}
+              style={panelRangeStyle}
             />
           </label>
 

@@ -19,32 +19,43 @@ const DIM = ' opacity-[var(--dim-opacity)] hover:opacity-100';
 export function getCellClass({ banded, cell, cursorId, relations, sheetName }: Args): string {
   const id = `${sheetName}!${cell.address}`;
   const align = cell.isNumber ? 'text-right' : 'text-left';
+  const isCursorCell = id === cursorId;
+  const isSelectedCell = id === relations.selectedId;
+  const isDirectPrecedent = relations.precedentSet.has(id);
+  const isDirectDependent = relations.dependentSet.has(id);
+  const isDeepPrecedent = relations.precedentDeepSet.has(id);
+  const isDeepDependent = relations.dependentDeepSet.has(id);
+  const participatesInCycle = relations.cycleCells.has(id);
+  const hasFormula = cell.formula.length > 0;
 
   let outline = '';
-  if (id === cursorId) {
+  if (isCursorCell) {
     outline = ' font-semibold outline-2 -outline-offset-2 outline-[var(--accent)]';
-  } else if (id === relations.selectedId) {
+  }
+  if (isSelectedCell) {
     outline = ' outline-2 -outline-offset-2 outline-dashed outline-[var(--accent)]';
   }
 
-  const dim = relations.selectedId && !outline ? DIM : '';
+  const shouldDimUnrelatedCell = relations.selectedId !== null && outline === '';
+  const dim = shouldDimUnrelatedCell ? DIM : '';
 
-  if (id === relations.selectedId && !relations.precedentSet.has(id)) {
+  const isSelectedDataCell = isSelectedCell && !isDirectPrecedent;
+  if (isSelectedDataCell) {
     return `${BASE} ${align} bg-[var(--cell-bg)]${outline}`;
   }
-  if (relations.precedentSet.has(id)) return `${BASE} ${align} bg-[var(--cell-precedent)]${outline}`;
-  if (relations.dependentSet.has(id)) return `${BASE} ${align} bg-[var(--cell-dependent)]${outline}`;
-  if (relations.precedentDeepSet.has(id)) {
+  if (isDirectPrecedent) return `${BASE} ${align} bg-[var(--cell-precedent)]${outline}`;
+  if (isDirectDependent) return `${BASE} ${align} bg-[var(--cell-dependent)]${outline}`;
+  if (isDeepPrecedent) {
     return `${BASE} ${align} bg-[var(--cell-precedent-deep)]${outline}`;
   }
-  if (relations.dependentDeepSet.has(id)) {
+  if (isDeepDependent) {
     return `${BASE} ${align} bg-[var(--cell-dependent-deep)]${outline}`;
   }
 
-  if (relations.cycleCells.has(id)) {
+  if (participatesInCycle) {
     return `${BASE} ${align} bg-[var(--cell-cycle-bg)] text-[color:var(--cell-cycle-text)]${outline}${dim}`;
   }
-  if (cell.formula) {
+  if (hasFormula) {
     return `${BASE} ${align} bg-[var(--cell-formula-bg)] text-[color:var(--cell-formula-text)]${outline}${dim}`;
   }
   return `${BASE} ${align} ${banded ? 'bg-[var(--cell-bg-banded)]' : 'bg-[var(--cell-bg)]'}${outline}${dim}`;

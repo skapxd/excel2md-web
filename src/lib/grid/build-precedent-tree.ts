@@ -12,7 +12,7 @@ export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string):
 
   const visit = (id: string, depth: number, path: Set<string>): DependencyNode[] => {
     const cell = byId.get(id);
-    if (!cell) return [];
+    if (cell === undefined) return [];
     const children: DependencyNode[] = [];
 
     const addFormulaChildren = (
@@ -20,8 +20,10 @@ export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string):
       depCell: FormulaCell | undefined,
       dep: string,
     ): void => {
-      if (!depCell || node.cyclic) return;
-      if (depth < MAX_DEPTH) {
+      const cannotExpandFormulaNode = depCell === undefined || node.cyclic;
+      if (cannotExpandFormulaNode) return;
+      const canDescendIntoPrecedents = depth < MAX_DEPTH;
+      if (canDescendIntoPrecedents) {
         node.children = visit(dep, depth + 1, new Set([...path, dep]));
         node.truncated = depCell.deps.length > 0 && node.children.length === 0 && budget <= 0;
         return;
@@ -30,12 +32,15 @@ export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string):
     };
 
     const addRangeChildren = (node: DependencyNode, depCell: FormulaCell | undefined, dep: string): void => {
-      if (depCell || !dep.includes(':') || depth >= MAX_DEPTH) return;
+      const canExpandRangeNode = depCell === undefined && dep.includes(':') && depth < MAX_DEPTH;
+      if (!canExpandRangeNode) return;
       // Rango: sus hijos son las celdas con fórmula dentro del rango.
       for (const innerId of expandRefToCells(dep)) {
-        if (budget <= 0) break;
+        const exhaustedNodeBudget = budget <= 0;
+        if (exhaustedNodeBudget) break;
         const innerCell = byId.get(innerId);
-        if (!innerCell || path.has(innerId)) continue;
+        const cannotAddRangeChild = innerCell === undefined || path.has(innerId);
+        if (cannotAddRangeChild) continue;
         budget -= 1;
         node.children.push({
           children: visit(innerId, depth + 1, new Set([...path, innerId])),
@@ -48,7 +53,8 @@ export function buildPrecedentTree(formulaCells: FormulaCell[], rootId: string):
     };
 
     for (const dep of cell.deps) {
-      if (budget <= 0) break;
+      const exhaustedNodeBudget = budget <= 0;
+      if (exhaustedNodeBudget) break;
       budget -= 1;
       const depCell = byId.get(dep);
       const cyclic = path.has(dep);

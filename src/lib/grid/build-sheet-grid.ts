@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import { isCellObject } from '@/lib/xlsx/is-cell-object';
 import type { GridCell, GridRow, SheetGrid } from '@/lib/grid/types';
 
 const MAX_ROWS = 300;
@@ -7,7 +8,8 @@ const MAX_COLS = 40;
 export function buildSheetGrid(workbook: XLSX.WorkBook, sheetName: string): SheetGrid {
   const sheet = workbook.Sheets[sheetName];
   const ref = sheet?.['!ref'];
-  if (!sheet || !ref) return { columns: [], name: sheetName, rows: [], truncated: false };
+  const hasUsableSheetRange = sheet !== undefined && typeof ref === 'string' && ref.length > 0;
+  if (!hasUsableSheetRange) return { columns: [], name: sheetName, rows: [], truncated: false };
 
   const range = XLSX.utils.decode_range(ref);
   const endRow = Math.min(range.e.r, range.s.r + MAX_ROWS - 1);
@@ -24,7 +26,8 @@ export function buildSheetGrid(workbook: XLSX.WorkBook, sheetName: string): Shee
     const cells: GridCell[] = [];
     for (let col = range.s.c; col <= endCol; col += 1) {
       const address = XLSX.utils.encode_cell({ c: col, r: row });
-      const cell = sheet[address] as XLSX.CellObject | undefined;
+      const rawCell: unknown = sheet[address];
+      const cell = isCellObject(rawCell) ? rawCell : undefined;
       cells.push({
         address,
         formula: cell?.f ?? '',

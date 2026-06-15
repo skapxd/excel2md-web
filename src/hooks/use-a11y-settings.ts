@@ -26,12 +26,15 @@ export function useA11ySettings(): A11ySettingsApi {
     previousDark.current = dark;
     if (darkChanged) {
       void runThemeTransition(apply);
-    } else {
+    }
+    const shouldApplyImmediately = !darkChanged;
+    if (shouldApplyImmediately) {
       apply();
     }
 
     // En modo "sistema", reaccionar en vivo cuando el OS cambia de tema.
-    if (settings.theme !== 'system') return;
+    const shouldFollowSystemTheme = settings.theme === 'system';
+    if (!shouldFollowSystemTheme) return;
     const controller = new AbortController();
     const media = window.matchMedia('(prefers-color-scheme: dark)');
     media.addEventListener(

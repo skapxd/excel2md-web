@@ -5,7 +5,8 @@ import type { FormulaCell } from '@/lib/analyze/types';
 export function findCellDependents(formulaCells: FormulaCell[], cellId: string): string[] {
   const dependents: string[] = [];
   for (const formulaCell of formulaCells) {
-    if (formulaCell.deps.some((dep) => refIncludesCell(dep, cellId))) {
+    const formulaReferencesCell = formulaCell.deps.some((dep) => refIncludesCell(dep, cellId));
+    if (formulaReferencesCell) {
       dependents.push(formulaCell.id);
     }
   }

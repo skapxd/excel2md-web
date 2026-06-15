@@ -5,9 +5,11 @@ const REF_PATTERN =
 export function extractFormulaRefs(formula: string, ownSheet: string): string[] {
   const refs = new Set<string>();
   for (const found of formula.matchAll(REF_PATTERN)) {
-    const sheet = found[1] ? found[1].replaceAll("'", '') : ownSheet;
-    const cell = (found[2] ?? '').replaceAll('$', '');
-    if (cell) refs.add(`${sheet}!${cell}`);
+    const explicitSheetName = found[1];
+    const sheet = explicitSheetName === undefined ? ownSheet : explicitSheetName.replaceAll("'", '');
+    const cell = found[2]?.replaceAll('$', '');
+    if (cell === undefined) continue;
+    refs.add(`${sheet}!${cell}`);
   }
   return [...refs];
 }

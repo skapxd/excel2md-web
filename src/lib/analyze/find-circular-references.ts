@@ -7,20 +7,25 @@ export function findCircularReferences(cells: FormulaCell[], limit = 5): string[
   const state = new Map<string, 'visiting' | 'done'>();
 
   const visit = (id: string, path: string[]): void => {
-    if (cycles.length >= limit) return;
+    const reachedCycleLimit = cycles.length >= limit;
+    if (reachedCycleLimit) return;
     const mark = state.get(id);
-    if (mark === 'done') return;
+    const alreadyResolvedNode = mark === 'done';
+    if (alreadyResolvedNode) return;
     const cycleStart = path.indexOf(id);
-    if (mark === 'visiting' && cycleStart >= 0) {
+    const closesCurrentPathCycle = mark === 'visiting' && cycleStart >= 0;
+    if (closesCurrentPathCycle) {
       cycles.push([...path.slice(cycleStart), id]);
       return;
     }
-    if (mark === 'visiting') {
+    const isVisitingOutsideCurrentPath = mark === 'visiting';
+    if (isVisitingOutsideCurrentPath) {
       return;
     }
     state.set(id, 'visiting');
     for (const dep of graph.get(id) ?? []) {
-      if (graph.has(dep)) visit(dep, [...path, id]);
+      const dependencyHasFormulaNode = graph.has(dep);
+      if (dependencyHasFormulaNode) visit(dep, [...path, id]);
     }
     state.set(id, 'done');
   };

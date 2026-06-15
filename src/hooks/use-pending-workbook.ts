@@ -16,7 +16,8 @@ export function usePendingWorkbook(): PendingWorkbook {
   useEffect(() => {
     const load = async (): Promise<void> => {
       const stored = await loadPendingFile();
-      if (!stored.ok && stored.error.type === 'NOT_FOUND') {
+      const pendingFileMissing = !stored.ok && stored.error.type === 'NOT_FOUND';
+      if (pendingFileMissing) {
         setState({ status: 'empty' });
         return;
       }

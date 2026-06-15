@@ -13,7 +13,8 @@ export function analyzeWorkbook(workbook: XLSX.WorkBook): WorkbookAnalysis {
   let crossSheetRefs = 0;
   for (const cell of formulaCells) {
     for (const dep of cell.deps) {
-      if (!dep.startsWith(`${cell.sheet}!`)) crossSheetRefs += 1;
+      const targetsAnotherSheet = !dep.startsWith(`${cell.sheet}!`);
+      if (targetsAnotherSheet) crossSheetRefs += 1;
     }
   }
 

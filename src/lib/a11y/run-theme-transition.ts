@@ -18,7 +18,8 @@ export async function runThemeTransition(apply: () => void): Promise<void> {
     return;
   }
 
-  if (!('startViewTransition' in document)) {
+  const supportsViewTransition = 'startViewTransition' in document;
+  if (!supportsViewTransition) {
     root.classList.add('theme-transition');
     apply();
     setTimeout(() => root.classList.remove('theme-transition'), 450);

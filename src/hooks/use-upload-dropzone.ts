@@ -24,7 +24,8 @@ export function useUploadDropzone(): UploadDropzoneApi {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const acceptFile = async (file: File): Promise<void> => {
-    if (!/\.(xlsx|xlsm)$/i.test(file.name)) {
+    const hasSupportedExcelExtension = /\.(xlsx|xlsm)$/i.test(file.name);
+    if (!hasSupportedExcelExtension) {
       setStatus({ kind: 'error', message: 'Solo se aceptan archivos .xlsx o .xlsm' });
       return;
     }
@@ -40,8 +41,8 @@ export function useUploadDropzone(): UploadDropzoneApi {
 
   const onDrop = (event: DragEvent<HTMLElement>): void => {
     event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file) {
+    const file = event.dataTransfer.files.item(0);
+    if (file !== null) {
       void acceptFile(file);
       return;
     }
@@ -58,8 +59,9 @@ export function useUploadDropzone(): UploadDropzoneApi {
   const openPicker = (): void => inputRef.current?.click();
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const file = event.target.files?.[0];
-    if (file) void acceptFile(file);
+    const file = event.target.files?.item(0);
+    const selectedFileExists = file !== undefined && file !== null;
+    if (selectedFileExists) void acceptFile(file);
     event.target.value = '';
   };
 

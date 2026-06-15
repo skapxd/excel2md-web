@@ -1,14 +1,18 @@
 import type * as XLSX from 'xlsx';
+import { isCellObject } from '@/lib/xlsx/is-cell-object';
 
 export function countNonEmptyCells(workbook: XLSX.WorkBook): number {
   let total = 0;
   for (const sheetName of workbook.SheetNames) {
     const sheet = workbook.Sheets[sheetName];
-    if (!sheet) continue;
+    if (sheet === undefined) continue;
     for (const [address, raw] of Object.entries(sheet)) {
-      if (address.startsWith('!')) continue;
-      const value = (raw as XLSX.CellObject).v;
-      if (value !== undefined && value !== null && value !== '') total += 1;
+      const isSheetMetadata = address.startsWith('!');
+      if (isSheetMetadata) continue;
+      if (!isCellObject(raw)) continue;
+      const value: unknown = raw.v;
+      const hasDisplayableCellValue = value !== undefined && value !== null && value !== '';
+      if (hasDisplayableCellValue) total += 1;
     }
   }
   return total;

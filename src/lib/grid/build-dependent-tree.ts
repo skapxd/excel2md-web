@@ -13,7 +13,8 @@ export function buildDependentTree(formulaCells: FormulaCell[], rootId: string):
   const visit = (id: string, depth: number, path: Set<string>): DependencyNode[] => {
     const nodes: DependencyNode[] = [];
     for (const dependentId of findCellDependents(formulaCells, id)) {
-      if (budget <= 0) break;
+      const exhaustedNodeBudget = budget <= 0;
+      if (exhaustedNodeBudget) break;
       budget -= 1;
       const cell = byId.get(dependentId);
       const cyclic = path.has(dependentId);
@@ -28,11 +29,13 @@ export function buildDependentTree(formulaCells: FormulaCell[], rootId: string):
         nodes.push(node);
         continue;
       }
-      if (depth < MAX_DEPTH) {
+      const canDescendIntoDependents = depth < MAX_DEPTH;
+      if (canDescendIntoDependents) {
         node.children = visit(dependentId, depth + 1, new Set([...path, dependentId]));
-      } else {
-        node.truncated = findCellDependents(formulaCells, dependentId).length > 0;
+        nodes.push(node);
+        continue;
       }
+      node.truncated = findCellDependents(formulaCells, dependentId).length > 0;
       nodes.push(node);
     }
     return nodes;

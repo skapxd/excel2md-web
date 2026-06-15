@@ -20,12 +20,15 @@ export function usePopover(): PopoverApi {
     const { signal } = controller;
     const onPointerDown = (event: PointerEvent): void => {
       const node = containerRef.current;
-      if (node && event.target instanceof Node && !node.contains(event.target)) {
+      const clickedOutsidePopover =
+        node !== null && event.target instanceof Node && !node.contains(event.target);
+      if (clickedOutsidePopover) {
         setOpen(false);
       }
     };
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') setOpen(false);
+      const requestedPopoverClose = event.key === 'Escape';
+      if (requestedPopoverClose) setOpen(false);
     };
     document.addEventListener('pointerdown', onPointerDown, { signal });
     document.addEventListener('keydown', onKeyDown, { signal });

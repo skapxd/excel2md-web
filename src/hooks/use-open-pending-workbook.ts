@@ -9,7 +9,8 @@ export function useOpenPendingWorkbook(): PendingWorkbook {
   const openWorkbook = useWorkbookStore((state) => state.openWorkbook);
 
   useEffect(() => {
-    if (pending.status === 'ready') openWorkbook(pending.fileName, pending.workbook);
+    const hasLoadedWorkbook = pending.status === 'ready';
+    if (hasLoadedWorkbook) openWorkbook(pending.fileName, pending.workbook);
   }, [pending, openWorkbook]);
 
   return pending;

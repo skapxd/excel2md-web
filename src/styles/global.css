@@ -54,11 +54,23 @@
   --chrome-border: #343943;
 }
 
-/* Transición de tema: View Transitions API (reveal circular controlado por JS) */
+/* Transición de tema: View Transitions API (reveal radial controlado por JS) */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  transform-origin: 92% 4%;
+}
+
+.theme-transition-dom-lock,
+.theme-transition-dom-lock *,
+.theme-transition-dom-lock *::before,
+.theme-transition-dom-lock *::after {
+  transition: none !important;
 }
 
 /* Fallback para navegadores sin View Transitions: cross-fade de colores por CSS */

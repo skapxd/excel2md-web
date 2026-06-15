@@ -1,12 +1,12 @@
 import { trySafe } from '@skapxd/result';
 import { reportDomainError } from '@/lib/errors/report-domain-error';
+import { getRevealGeometry } from '@/lib/a11y/get-reveal-geometry';
 
-const REVEAL_ORIGIN = '92% 4%';
-const REVEAL_MS = 550;
+const REVEAL_MS = 460;
 
 /**
  * Aplica el cambio de tema con una transición suave y progresiva:
- * - View Transitions API con reveal circular desde la esquina del menú ♿.
+ * - View Transitions API con reveal radial desde la esquina del menú.
  * - Fallback: cross-fade de colores por CSS en navegadores sin la API.
  * - Sin animación si el usuario prefiere movimiento reducido.
  */
@@ -26,15 +26,39 @@ export async function runThemeTransition(apply: () => void): Promise<void> {
     return;
   }
 
+  root.classList.add('theme-transition-dom-lock');
   const transition = document.startViewTransition(apply);
   const ready = await trySafe(() => transition.ready);
   if (!ready.ok) {
+    root.classList.remove('theme-transition-dom-lock');
     reportDomainError('No se pudo preparar la transición de tema.', ready.error);
     return;
   }
 
-  root.animate(
-    { clipPath: [`circle(0% at ${REVEAL_ORIGIN})`, `circle(150% at ${REVEAL_ORIGIN})`] },
-    { duration: REVEAL_MS, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
-  );
+  const animated = await trySafe(() => {
+    const { origin, radius } = getRevealGeometry();
+
+    root.animate(
+      { opacity: [1, 0.9] },
+      { duration: REVEAL_MS, easing: 'ease-out', pseudoElement: '::view-transition-old(root)' },
+    );
+    root.animate(
+      {
+        clipPath: [`circle(0px at ${origin})`, `circle(${radius}px at ${origin})`],
+        transform: ['scale(0.985)', 'scale(1)'],
+      },
+      {
+        duration: REVEAL_MS,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        pseudoElement: '::view-transition-new(root)',
+      },
+    );
+
+    return transition.finished;
+  });
+
+  root.classList.remove('theme-transition-dom-lock');
+  if (!animated.ok) {
+    reportDomainError('No se pudo animar la transición de tema.', animated.error);
+  }
 }

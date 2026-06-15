@@ -3,6 +3,8 @@ import { reportDomainError } from '@/lib/errors/report-domain-error';
 import { getRevealGeometry } from '@/lib/a11y/get-reveal-geometry';
 
 const REVEAL_MS = 460;
+const FALLBACK_TRANSITION_CLEANUP_MS = 450;
+const OLD_THEME_FADE_OPACITY = 0.9;
 
 /**
  * Aplica el cambio de tema con una transición suave y progresiva:
@@ -22,7 +24,7 @@ export async function runThemeTransition(apply: () => void): Promise<void> {
   if (!supportsViewTransition) {
     root.classList.add('theme-transition');
     apply();
-    setTimeout(() => root.classList.remove('theme-transition'), 450);
+    setTimeout(() => root.classList.remove('theme-transition'), FALLBACK_TRANSITION_CLEANUP_MS);
     return;
   }
 
@@ -39,7 +41,7 @@ export async function runThemeTransition(apply: () => void): Promise<void> {
     const { origin, radius } = getRevealGeometry();
 
     root.animate(
-      { opacity: [1, 0.9] },
+      { opacity: [1, OLD_THEME_FADE_OPACITY] },
       { duration: REVEAL_MS, easing: 'ease-out', pseudoElement: '::view-transition-old(root)' },
     );
     root.animate(

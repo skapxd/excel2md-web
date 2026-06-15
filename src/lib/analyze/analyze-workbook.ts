@@ -6,6 +6,8 @@ import { linkDependents } from '@/lib/analyze/link-dependents';
 import { listFormulaCells } from '@/lib/analyze/list-formula-cells';
 import type { WorkbookAnalysis } from '@/lib/analyze/types';
 
+const TOP_REFERENCED_CELLS_LIMIT = 8;
+
 export function analyzeWorkbook(workbook: XLSX.WorkBook): WorkbookAnalysis {
   const formulaCells = listFormulaCells(workbook);
   linkDependents(formulaCells);
@@ -29,6 +31,6 @@ export function analyzeWorkbook(workbook: XLSX.WorkBook): WorkbookAnalysis {
       nonEmptyCells: countNonEmptyCells(workbook),
       sheetCount: workbook.SheetNames.length,
     },
-    topReferenced: countCellReferences(formulaCells, 8),
+    topReferenced: countCellReferences(formulaCells, TOP_REFERENCED_CELLS_LIMIT),
   };
 }

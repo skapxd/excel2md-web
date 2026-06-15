@@ -1,5 +1,12 @@
 import { Accessibility, Blend, Monitor, Moon, RotateCcw, Sun, SunDim, Type, X } from 'lucide-react';
 import { usePopover } from '@/hooks/use-popover';
+import {
+  A11Y_DIMMING_MAX,
+  A11Y_DIMMING_MIN,
+  A11Y_PANEL_ALPHA_MAX,
+  A11Y_PANEL_ALPHA_MIN,
+  A11Y_PERCENT_FACTOR,
+} from '@/lib/a11y/types';
 import type { CSSProperties } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import type { A11ySettings, ThemeMode } from '@/lib/a11y/types';
@@ -23,12 +30,20 @@ const FONT_OPTIONS: { value: A11ySettings['gridFont']; label: string; sample: st
   { label: 'Extra', sample: 'text-base', value: 'extra' },
 ];
 
+const DIMMING_SLIDER_MIN = A11Y_DIMMING_MIN * A11Y_PERCENT_FACTOR;
+const DIMMING_SLIDER_MAX = A11Y_DIMMING_MAX * A11Y_PERCENT_FACTOR;
+const PANEL_ALPHA_SLIDER_MIN = A11Y_PANEL_ALPHA_MIN * A11Y_PERCENT_FACTOR;
+const PANEL_ALPHA_SLIDER_MAX = A11Y_PANEL_ALPHA_MAX * A11Y_PERCENT_FACTOR;
+
 export function AccessibilityMenu({ api }: Props) {
   const popover = usePopover();
-  const dimmingPct = Math.round(api.settings.dimming * 100);
-  const panelPct = Math.round(api.settings.panelAlpha * 100);
-  const dimmingRangeStyle: RangeFillStyle = { '--range-fill': `${(dimmingPct / 80) * 100}%` };
-  const panelRangeStyle: RangeFillStyle = { '--range-fill': `${((panelPct - 60) / 40) * 100}%` };
+  const dimmingPct = Math.round(api.settings.dimming * A11Y_PERCENT_FACTOR);
+  const panelPct = Math.round(api.settings.panelAlpha * A11Y_PERCENT_FACTOR);
+  const dimmingFill = ((dimmingPct - DIMMING_SLIDER_MIN) / (DIMMING_SLIDER_MAX - DIMMING_SLIDER_MIN)) * A11Y_PERCENT_FACTOR;
+  const panelFill =
+    ((panelPct - PANEL_ALPHA_SLIDER_MIN) / (PANEL_ALPHA_SLIDER_MAX - PANEL_ALPHA_SLIDER_MIN)) * A11Y_PERCENT_FACTOR;
+  const dimmingRangeStyle: RangeFillStyle = { '--range-fill': `${dimmingFill}%` };
+  const panelRangeStyle: RangeFillStyle = { '--range-fill': `${panelFill}%` };
 
   return (
     <div ref={popover.containerRef} className="relative shrink-0">
@@ -97,10 +112,10 @@ export function AccessibilityMenu({ api }: Props) {
             </span>
             <input
               type="range"
-              min={0}
-              max={80}
+              min={DIMMING_SLIDER_MIN}
+              max={DIMMING_SLIDER_MAX}
               value={dimmingPct}
-              onChange={(event) => api.update({ dimming: Number(event.target.value) / 100 })}
+              onChange={(event) => api.update({ dimming: Number(event.target.value) / A11Y_PERCENT_FACTOR })}
               className="a11y-range mt-2 w-full"
               style={dimmingRangeStyle}
             />
@@ -120,10 +135,10 @@ export function AccessibilityMenu({ api }: Props) {
             </span>
             <input
               type="range"
-              min={60}
-              max={100}
+              min={PANEL_ALPHA_SLIDER_MIN}
+              max={PANEL_ALPHA_SLIDER_MAX}
               value={panelPct}
-              onChange={(event) => api.update({ panelAlpha: Number(event.target.value) / 100 })}
+              onChange={(event) => api.update({ panelAlpha: Number(event.target.value) / A11Y_PERCENT_FACTOR })}
               className="a11y-range mt-2 w-full"
               style={panelRangeStyle}
             />

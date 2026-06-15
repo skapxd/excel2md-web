@@ -10,6 +10,12 @@ export type A11ySettings = {
   gridFont: 'normal' | 'grande' | 'extra';
 };
 
+export const A11Y_PERCENT_FACTOR = 100;
+export const A11Y_DIMMING_MIN = 0;
+export const A11Y_DIMMING_MAX = 0.8;
+export const A11Y_PANEL_ALPHA_MIN = 0.6;
+export const A11Y_PANEL_ALPHA_MAX = 1;
+
 export const DEFAULT_A11Y_SETTINGS: A11ySettings = {
   dimming: 0.65,
   gridFont: 'normal',

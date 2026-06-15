@@ -5,7 +5,14 @@ import { isGridFont } from '@/lib/a11y/is-grid-font';
 import { isObjectRecord } from '@/lib/a11y/is-object-record';
 import { isThemeMode } from '@/lib/a11y/is-theme-mode';
 import { reportDomainError } from '@/lib/errors/report-domain-error';
-import { A11Y_STORAGE_KEY, DEFAULT_A11Y_SETTINGS } from '@/lib/a11y/types';
+import {
+  A11Y_DIMMING_MAX,
+  A11Y_DIMMING_MIN,
+  A11Y_PANEL_ALPHA_MAX,
+  A11Y_PANEL_ALPHA_MIN,
+  A11Y_STORAGE_KEY,
+  DEFAULT_A11Y_SETTINGS,
+} from '@/lib/a11y/types';
 import type { A11ySettings, ThemeMode } from '@/lib/a11y/types';
 
 export function loadA11ySettings(): A11ySettings {
@@ -33,9 +40,14 @@ export function loadA11ySettings(): A11ySettings {
     : DEFAULT_A11Y_SETTINGS.gridFont;
 
   return {
-    dimming: clampNumber(parsed.value.dimming, DEFAULT_A11Y_SETTINGS.dimming, 0, 0.8),
+    dimming: clampNumber(parsed.value.dimming, DEFAULT_A11Y_SETTINGS.dimming, A11Y_DIMMING_MIN, A11Y_DIMMING_MAX),
     gridFont,
-    panelAlpha: clampNumber(parsed.value.panelAlpha, DEFAULT_A11Y_SETTINGS.panelAlpha, 0.6, 1),
+    panelAlpha: clampNumber(
+      parsed.value.panelAlpha,
+      DEFAULT_A11Y_SETTINGS.panelAlpha,
+      A11Y_PANEL_ALPHA_MIN,
+      A11Y_PANEL_ALPHA_MAX,
+    ),
     theme,
   };
 }

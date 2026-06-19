@@ -13,6 +13,7 @@ export type WorkbookSession = {
   cell: string | null;
   /** Ancla del panel de dependencias (id `Hoja!A1`); solo cambia al hacer clic en la hoja. */
   inspectedId: string | null;
+  closeCellDetails: () => void;
   openWorkbook: (fileName: string, workbook: XLSX.WorkBook) => void;
   setTab: (tab: AnalyzerTab) => void;
   selectSheet: (sheet: string) => void;
@@ -26,6 +27,7 @@ export type WorkbookSession = {
 
 export const useWorkbookStore = create<WorkbookSession>()((set) => ({
   cell: null,
+  closeCellDetails: () => set({ inspectedId: null }),
   fileName: '',
   inspect: (id) => {
     const target = splitCellId(id);
@@ -51,7 +53,7 @@ export const useWorkbookStore = create<WorkbookSession>()((set) => ({
       workbook,
     }),
   selectCell: (cell) => set((state) => ({ cell, inspectedId: `${state.sheet}!${cell}` })),
-  selectSheet: (sheet) => set({ cell: null, sheet }),
+  selectSheet: (sheet) => set({ cell: null, inspectedId: null, sheet }),
   setTab: (tab) => set({ tab }),
   sheet: '',
   tab: 'hoja',

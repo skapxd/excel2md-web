@@ -3,6 +3,7 @@ import { ExcelGrid } from '@/components/analyzer/excel-grid';
 import { FormulaBar } from '@/components/analyzer/formula-bar';
 import { SheetTabs } from '@/components/analyzer/sheet-tabs';
 import { useCellRelations } from '@/hooks/use-cell-relations';
+import { useCloseCellDetailsOnEscape } from '@/hooks/use-close-cell-details-on-escape';
 import { useSheetGrid } from '@/hooks/use-sheet-grid';
 import { useWorkbookStore } from '@/hooks/use-workbook-store';
 import { getGridCell } from '@/lib/grid/get-grid-cell';
@@ -20,6 +21,8 @@ export function SpreadsheetPanel({ analysis }: Props) {
   // El panel se enraíza en la celda inspeccionada, no en el cursor.
   const inspected = session.inspectedId ? splitCellId(session.inspectedId) : null;
   const relations = useCellRelations(analysis, inspected?.sheet ?? '', inspected?.cell ?? null);
+  const hasOpenCellDetails = session.inspectedId !== null;
+  useCloseCellDetailsOnEscape(hasOpenCellDetails, session.closeCellDetails);
 
   // La barra de fórmulas sí sigue al cursor, como en Excel.
   const cursorCell = getGridCell(grid, session.cell);
@@ -36,9 +39,15 @@ export function SpreadsheetPanel({ analysis }: Props) {
           onSelectCell={(address) => session.selectCell(address)}
         />
         {/* Panel flotante anclado a la celda inspeccionada: los chips navegan sin mutarlo */}
-        <div className="absolute bottom-4 right-4 z-20 w-max min-w-[24rem] max-w-[min(46rem,calc(100vw-2rem))]">
-          <CellDetails relations={relations} sheetName={inspected?.sheet ?? session.sheet} />
-        </div>
+        {hasOpenCellDetails && (
+          <div className="absolute bottom-4 right-4 z-20 w-max min-w-[24rem] max-w-[min(46rem,calc(100vw-2rem))]">
+            <CellDetails
+              relations={relations}
+              sheetName={inspected?.sheet ?? session.sheet}
+              onClose={session.closeCellDetails}
+            />
+          </div>
+        )}
       </div>
       <SheetTabs
         active={session.sheet}

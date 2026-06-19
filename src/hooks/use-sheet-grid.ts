@@ -8,7 +8,7 @@ export function useSheetGrid(workbook: XLSX.WorkBook | null, sheetName: string):
     () =>
       workbook
         ? buildSheetGrid(workbook, sheetName)
-        : { columns: [], name: sheetName, rows: [], truncated: false },
+        : { columns: [], name: sheetName, rows: [], truncated: false, widthPx: 0 },
     [workbook, sheetName],
   );
 }

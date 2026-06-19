@@ -1,23 +1,33 @@
 export type GridCell = {
   /** Dirección A1 dentro de la hoja. */
   address: string;
+  colSpan: number;
   /** Texto a mostrar (formateado por Excel cuando existe). */
   value: string;
   /** Fórmula sin el `=` inicial, o '' si no tiene. */
   formula: string;
+  rowSpan: number;
   isNumber: boolean;
+};
+
+export type GridColumn = {
+  index: number;
+  label: string;
+  widthPx: number;
 };
 
 export type GridRow = {
   rowNumber: number;
+  heightPx: number;
   cells: GridCell[];
 };
 
 export type SheetGrid = {
   name: string;
-  columns: string[];
+  columns: GridColumn[];
   rows: GridRow[];
   truncated: boolean;
+  widthPx: number;
 };
 
 export type DependencyNode = {

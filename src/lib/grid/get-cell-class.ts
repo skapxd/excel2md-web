@@ -10,7 +10,7 @@ type Args = {
 };
 
 const BASE =
-  'h-[calc(var(--grid-font)*2.1)] min-w-[4.5rem] max-w-[16rem] cursor-cell truncate whitespace-nowrap border border-[var(--cell-border)] px-2 text-[length:var(--grid-font)] text-[color:var(--cell-text)] transition hover:bg-[var(--cell-hover)]';
+  'cursor-cell truncate whitespace-nowrap border border-[var(--cell-border)] px-2 py-0 align-middle text-[length:var(--grid-font)] text-[color:var(--cell-text)] transition hover:bg-[var(--cell-hover)]';
 
 /** Atenuación "spotlight" parametrizable: lo que no participa en la cadena se ensombrece. */
 const DIM = ' opacity-[var(--dim-opacity)] hover:opacity-100';

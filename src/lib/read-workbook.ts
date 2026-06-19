@@ -4,7 +4,9 @@ import * as XLSX from 'xlsx';
 export type ReadWorkbookError = { type: 'INVALID_FILE'; message: string; cause: unknown };
 
 export function readWorkbook(bytes: ArrayBuffer): Result<XLSX.WorkBook, ReadWorkbookError> {
-  const parsed = trySafe(() => XLSX.read(bytes, { cellFormula: true, cellNF: true, cellText: true }));
+  const parsed = trySafe(() =>
+    XLSX.read(bytes, { cellFormula: true, cellNF: true, cellStyles: true, cellText: true }),
+  );
   if (!parsed.ok) {
     return Result.err({
       cause: parsed.error,

@@ -14,34 +14,42 @@ const HEADER_BASE =
   'border border-[var(--header-border)] px-2 text-center text-xs font-semibold';
 const HEADER_IDLE = 'bg-[var(--header-bg)] text-[color:var(--header-text)]';
 const HEADER_ACTIVE = 'bg-[var(--accent)] text-white dark:text-[#0c1510]';
+const ROW_HEADER_WIDTH_PX = 48;
 
 export function ExcelGrid({ grid, onSelectCell, relations, selectedCell }: Props) {
   const selected = selectedCell ? decodeAddress(selectedCell) : null;
   const containerRef = useScrollToCell(selectedCell, grid.name);
+  const tableWidth = ROW_HEADER_WIDTH_PX + grid.widthPx;
 
   return (
     <div ref={containerRef} className="h-full overflow-auto bg-[var(--cell-bg)]">
-      <table className="border-separate border-spacing-0">
+      <table className="table-fixed border-separate border-spacing-0" style={{ width: tableWidth }}>
+        <colgroup>
+          <col style={{ width: ROW_HEADER_WIDTH_PX }} />
+          {grid.columns.map((column) => (
+            <col key={column.label} style={{ width: column.widthPx }} />
+          ))}
+        </colgroup>
         <thead>
           <tr>
             <th className="sticky left-0 top-0 z-20 h-7 w-12 border border-[var(--header-border)] bg-[var(--header-bg)]">
               <span className="sr-only">Fila</span>
             </th>
-            {grid.columns.map((column, index) => (
+            {grid.columns.map((column) => (
               <th
-                key={column}
-                className={`sticky top-0 z-10 h-7 min-w-[4.5rem] ${HEADER_BASE} ${
-                  selected && selected.colIndex === index ? HEADER_ACTIVE : HEADER_IDLE
+                key={column.label}
+                className={`sticky top-0 z-10 h-7 ${HEADER_BASE} ${
+                  selected && selected.colIndex === column.index ? HEADER_ACTIVE : HEADER_IDLE
                 }`}
               >
-                {column}
+                {column.label}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {grid.rows.map((row) => (
-            <tr key={row.rowNumber}>
+            <tr key={row.rowNumber} style={{ height: row.heightPx }}>
               <th
                 className={`sticky left-0 z-10 w-12 ${HEADER_BASE} ${
                   selected && selected.rowNumber === row.rowNumber ? HEADER_ACTIVE : HEADER_IDLE
@@ -52,8 +60,10 @@ export function ExcelGrid({ grid, onSelectCell, relations, selectedCell }: Props
               {row.cells.map((cell) => (
                 <td
                   key={cell.address}
+                  colSpan={cell.colSpan}
                   data-address={cell.address}
                   onClick={() => onSelectCell(cell.address)}
+                  rowSpan={cell.rowSpan}
                   className={getCellClass({
                     banded: row.rowNumber % 2 === 0,
                     cell,

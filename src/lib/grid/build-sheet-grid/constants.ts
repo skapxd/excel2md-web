@@ -1,0 +1,13 @@
+export const DEFAULT_COLUMN_WIDTH_PX = 64;
+export const DEFAULT_ROW_HEIGHT_PX = 20;
+export const EXCEL_CELL_PADDING_PX = 5;
+export const EXCEL_CHAR_WIDTH_PX = 7;
+export const EXCEL_SCREEN_DPI = 96;
+export const MAX_COLS = 40;
+export const MAX_COLUMN_WIDTH_PX = 360;
+export const MAX_ROWS = 300;
+export const MAX_ROW_HEIGHT_PX = 160;
+export const MIN_COLUMN_WIDTH_PX = 24;
+export const MIN_ROW_HEIGHT_PX = 16;
+export const POINTS_PER_INCH = 72;
+export const POINT_TO_PX = EXCEL_SCREEN_DPI / POINTS_PER_INCH;
